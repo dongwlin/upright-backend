@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace app\api\service;
 
-use app\exception\ApiServiceException;
+use app\api\exception\ApiServiceException;
 use Firebase\JWT\BeforeValidException;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
@@ -81,23 +81,67 @@ class TokenService extends BaseService
         }
     }
 
+
     /**
      * 检验token
      * @param string $jwt
      * @return array
-     * @throws ApiServiceException
      */
     public function checkToken(string $jwt = ''): array {
         try {
             JWT::$leeway = 60;  // 当前时间减去60，把时间留点余地，避免多服务器时间有误差，设置leeway后，token的有效时间就是exp+leeway
-            $decoded = JWT::decode($jwt, new Key($this->key, 'HS256'));  // HS256方式，这里要和签发的时候对应
-            return (array)$decoded;
-        } catch (SignatureInvalidException $exception) {  // 签名不正确
-            throw new ApiServiceException('签名不正确');
-        } catch (BeforeValidException $exception) {  // 签名未生效
-            throw new ApiServiceException('token未生效');
-        } catch (ExpiredException $exception) {  // token过期
-            throw new ApiServiceException('token失效');
+            $authInfo = (array)JWT::decode($jwt, new Key($this->key, 'HS256'));  // HS256方式，这里要和签发的时候对应
+            if (empty($authInfo['openid']) || !array_key_exists('openid', $authInfo))
+            {
+                return [
+                    'code' => 0,
+                    'msg' => 'invalid token'
+                ];
+            }
+            return [
+                'code' => 1,
+                'msg' => 'success',
+                'openid' => $authInfo['openid']
+            ];
+        }
+        catch (\InvalidArgumentException $exception) // key为空或格式错误
+        {
+            return [
+                'code' => 0,
+                'msg' => 'Provided key/key-array was empty or malformed'
+            ];
+        }
+        catch (\DomainException $exception)  // token格式错误
+        {
+            return [
+                'code' => 0,
+                'msg' => 'token is malformed'
+            ];
+        }
+        catch (SignatureInvalidException $exception) {  // 签名不正确
+            return [
+                'code' => 0,
+                'msg' => 'invalid token'
+            ];
+        }
+        catch (BeforeValidException $exception) {  // 签名未生效
+            return [
+                'code' => 0,
+                'msg' => 'invalid token'
+            ];
+        }
+        catch (ExpiredException $exception) {  // token过期
+            return [
+                'code' => 0,
+                'msg' => 'invalid token'
+            ];
+        }
+        catch (\UnexpectedValueException $exception)  // 异常值
+        {
+            return [
+                'code' => 0,
+                'msg' => 'invalid token'
+            ];
         }
     }
 
