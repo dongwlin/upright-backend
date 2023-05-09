@@ -5,5 +5,6 @@
 
 use think\facade\Route;
 
-Route::post('login', 'WXLoginController/index');
 Route::get('test', 'TestController/index');
+
+Route::post('login', 'WXLoginController/index');
