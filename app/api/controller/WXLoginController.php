@@ -50,12 +50,12 @@ class WXLoginController
                     'openid' => $result['openid'],
                     'nickname' => '微信用户',
                     'gender' => -1,
-                    'avatar' => request()->host() . '/res/image/1'
+                    'avatar' => request()->host() . '/static/common/images/defaultAvatar.png'
                 ]);
             }
             try {
                 return api_success([
-                   'token' => $service->createToken($result['openid']),
+                    'token' => $service->createToken($result['openid']),
                     'nickname' => $data->nickname,
                     'gender' => $data->gender,
                     'avatar' => $data->avatar
