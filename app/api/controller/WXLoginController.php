@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace app\api\controller;
 
 use app\api\exception\ApiServiceException;
-use app\common\model\User as UserModel;
+use app\common\model\UserModel;
 use app\api\service\TokenService;
 use think\response\Json;
 

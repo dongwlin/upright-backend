@@ -1,16 +1,21 @@
 <?php
 /**
- * User Model
+ * SolutionModel PostureModel Relationship Model
  */
-declare(strict_types=1);
+declare (strict_types = 1);
 
 namespace app\common\model;
 
 use think\Model;
 use think\model\concern\SoftDelete;
 
-class User extends Model
+/**
+ * @mixin \think\Model
+ */
+class SolutionPostureRelationshipModel extends Model
 {
+    protected $name = 'solution_posture_relationship';
+
     // 软删除
     use SoftDelete;
     protected $deleteTime = 'delete_time';
