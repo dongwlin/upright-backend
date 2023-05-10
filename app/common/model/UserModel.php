@@ -9,4 +9,9 @@ namespace app\common\model;
 class UserModel extends BaseModel
 {
     protected $name = 'user';
+
+    public function train()
+    {
+        return $this->hasMany(TrainModel::class, 'user_id');
+    }
 }

@@ -12,4 +12,9 @@ namespace app\common\model;
 class HardwareModel extends BaseModel
 {
     protected $name = 'hardware';
+
+    public function train()
+    {
+        return $this->belongsTo(TrainModel::class, 'train_id');
+    }
 }
