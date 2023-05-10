@@ -1,12 +1,18 @@
 <?php
+/**
+ * Test Controller
+ */
+declare(strict_types=1);
 
 namespace app\api\controller;
 
-class TestController
+use think\response\Json;
+
+class TestController extends BaseController
 {
-    public function index()
+    public function index(): Json
     {
-        dump(request()->host());
+        return api_success(['openid' => $this->openid]);
     }
 
 }
