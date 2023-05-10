@@ -5,6 +5,8 @@
 
 namespace app\api\controller;
 
+use think\Request;
+
 class BaseController
 {
     protected string $openid;
@@ -19,6 +21,6 @@ class BaseController
     protected function initData(): void
     {
         $this->param = (array)request()->param();
-        $this->openid = $this->param['openid'] ?? '';
+        $this->uid = request()->uid ?? 0;
     }
 }

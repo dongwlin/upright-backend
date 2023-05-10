@@ -56,11 +56,11 @@ class TokenService extends BaseService
 
     /**
      * 创建token
-     * @param string $openid 用户唯一标识
+     * @param string $uid 用户唯一标识
      * @return string
      * @throws ApiServiceException
      */
-    public function createToken(string $openid): string {
+    public function createToken(string $uid): string {
         $nowTime = time();
         $tokenConfig = [
             'iss' => $this->iss,
@@ -69,8 +69,8 @@ class TokenService extends BaseService
             'exp' => $nowTime + $this->exp,
             'nbf' => $nowTime,
             'iat' => $nowTime,
-            'jti' => $this->createJti($openid),
-            'openid' => $openid
+            'jti' => $this->createJti($uid),
+            'uid' => $uid
         ];
         try {
             return JWT::encode($tokenConfig, $this->key, 'HS256');
@@ -91,7 +91,7 @@ class TokenService extends BaseService
         try {
             JWT::$leeway = 60;  // 当前时间减去60，把时间留点余地，避免多服务器时间有误差，设置leeway后，token的有效时间就是exp+leeway
             $authInfo = (array)JWT::decode($jwt, new Key($this->key, 'HS256'));  // HS256方式，这里要和签发的时候对应
-            if (empty($authInfo['openid']) || !array_key_exists('openid', $authInfo))
+            if (empty($authInfo['uid']) || !array_key_exists('uid', $authInfo))
             {
                 return [
                     'code' => 0,
@@ -101,7 +101,7 @@ class TokenService extends BaseService
             return [
                 'code' => 1,
                 'msg' => 'success',
-                'openid' => $authInfo['openid']
+                'uid' => $authInfo['uid']
             ];
         }
         catch (\InvalidArgumentException $exception) // key为空或格式错误

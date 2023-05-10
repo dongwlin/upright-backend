@@ -24,10 +24,10 @@ class CheckAuth
         }
         $service = new TokenService();
         $res = $service->checkToken($auth);
-        if ($res['code'] == 1 && array_key_exists('openid', $res) && !empty($res['openid']))
+        if ($res['code'] == 1 && array_key_exists('uid', $res) && !empty($res['uid']))
         {
-            $openid = $res['openid'];
-            $user = UserModel::where('openid', $openid)->findOrEmpty();
+            $uid = $res['uid'];
+            $user = UserModel::where('id', $uid)->findOrEmpty();
             if ($user->isEmpty())
             {
                 return api_error('user not exists');
@@ -36,7 +36,7 @@ class CheckAuth
             {
                 return api_forbidden();
             }
-            $request->openid = $openid;
+            $request->uid = $uid;
         }
         else
         {

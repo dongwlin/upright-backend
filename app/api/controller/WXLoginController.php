@@ -55,7 +55,7 @@ class WXLoginController
             }
             try {
                 return api_success([
-                    'token' => $service->createToken($result['openid']),
+                    'token' => $service->createToken($data->id),
                     'nickname' => $data->nickname,
                     'gender' => $data->gender,
                     'avatar' => $data->avatar
