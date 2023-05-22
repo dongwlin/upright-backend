@@ -12,10 +12,10 @@ Route::miss(function() {
 // api index route
 ROute::rule('/', 'Index');
 // api login route
-Route::post('login', 'WXLoginController/index');
+Route::post('login', 'WXLogin/index');
 // api test route
 Route::group('test',function () {
-    Route::get('', 'TestController/index');
+    Route::get('', 'Test/index');
 })->middleware(\app\api\middleware\CheckAuth::class);
 // api test1 route
-Route::get('test1', 'TestController/test1');
+Route::get('test1', 'Test/test1');

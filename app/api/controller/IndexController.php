@@ -5,7 +5,7 @@ namespace app\api\controller;
 
 use think\response\Json;
 
-class Index
+class IndexController
 {
     public function index(): Json
     {

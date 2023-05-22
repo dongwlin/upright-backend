@@ -1,9 +1,9 @@
 <?php
 declare (strict_types = 1);
 
-namespace app\admin\controller;
+namespace app\index\controller;
 
-class Index
+class IndexController
 {
     public function index()
     {
