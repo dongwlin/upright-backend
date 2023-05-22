@@ -19,3 +19,11 @@ Route::group('test',function () {
 })->middleware(\app\api\middleware\CheckAuth::class);
 // api test1 route
 Route::get('test1', 'Test/test1');
+
+// user route
+Route::group('user', function () {
+   Route::get('create', 'user/create');
+   Route::post('update', 'user/update');
+   Route::get('read', 'user/read');
+   Route::delete('delete', 'user/delete');
+})->middleware(\app\api\middleware\CheckAuth::class);
