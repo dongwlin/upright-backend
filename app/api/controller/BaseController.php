@@ -9,7 +9,7 @@ use think\Request;
 
 class BaseController
 {
-    protected string $openid;
+    protected string $uid;
 
     protected array $param;
 
