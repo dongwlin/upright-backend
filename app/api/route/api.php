@@ -19,8 +19,6 @@ Route::post('login', 'WXLogin/index');
 Route::group('test',function () {
     Route::get('/', 'test/index');
 })->middleware(\app\api\middleware\CheckAuth::class);
-// api test1 route
-Route::get('test1', 'test/test1');
 
 // user route
 Route::group('user', function () {
