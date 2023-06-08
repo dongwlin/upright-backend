@@ -88,4 +88,46 @@ class TrainService extends BaseService
         }
         return true;
     }
+
+    /**
+     * 禁用
+     * @param $id
+     * @return bool
+     * @throws ApiServiceException
+     */
+    public function disable($id): bool
+    {
+        $data = $this->model->findOrEmpty($id);
+        if ($data->isEmpty())
+        {
+            throw new ApiServiceException("数据不存在");
+        }
+        $result = $data->save(['status' => false]);
+        if (!$result)
+        {
+            throw new ApiServiceException("禁用失败");
+        }
+        return true;
+    }
+
+    /**
+     * 启用
+     * @param $id
+     * @return bool
+     * @throws ApiServiceException
+     */
+    public function enable($id): bool
+    {
+        $data = $this->model->findOrEmpty($id);
+        if ($data->isEmpty())
+        {
+            throw new ApiServiceException("数据不存在");
+        }
+        $result = $data->save(['status' => true]);
+        if (!$result)
+        {
+            throw new ApiServiceException("启用失败");
+        }
+        return true;
+    }
 }
