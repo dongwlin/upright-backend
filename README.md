@@ -12,5 +12,11 @@
 
 重构中
 
+## 依赖
+
+```sh
+composer install
+```
+
 ## TODO
 
