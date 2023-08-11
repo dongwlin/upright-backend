@@ -79,7 +79,7 @@ if (!function_exists('api_not_content')) {
      * @param int $code
      * @return Json
      */
-    function api_accepted(string $msg = 'not content', array $data = [], int $code = 204): Json
+    function api_not_content(string $msg = 'not content', array $data = [], int $code = 204): Json
     {
         return api_result($msg, $data, $code);
     }
