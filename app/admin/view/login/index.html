@@ -230,7 +230,7 @@
         if (res.code === 200) {
           alert("验证通过");
         }
-        else if (res.code === 401) {
+        else if (res.code === 401 || res.code === 403) {
           const captchaImg = document.getElementById("captchaImg");
           captchaImg.src = `/admin/captcha?${Math.random()}`;
           alert(res.msg);
