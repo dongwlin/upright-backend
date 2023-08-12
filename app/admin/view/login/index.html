@@ -231,6 +231,9 @@
         if (res.code === 200) {
           alert("验证通过");
         }
+        else if (res.code === 401) {
+          alert(res.msg);
+        }
         else {
           console.log(res);
         }

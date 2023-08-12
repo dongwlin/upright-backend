@@ -8,6 +8,7 @@ namespace app\admin\controller;
 
 use app\admin\validate\AuthValidate;
 use think\exception\ValidateException;
+use think\response\Json;
 
 class LoginController
 {
@@ -16,22 +17,14 @@ class LoginController
         return view();
     }
 
-    public function auth()
+    public function auth(): Json
     {
         try {
             validate(AuthValidate::class)->check(request()->param());
         } catch (ValidateException $exception) {
-            return json([
-               'code'   => 500,
-               'msg'    => $exception->getError(),
-               'data'   => []
-            ]);
+            return api_unauthorized($exception->getError());
         }
-        return json([
-            'code'  => 200,
-            'msg'   => 'success',
-            'data'  => []
-        ]);
+        return api_ok();
     }
 
 
