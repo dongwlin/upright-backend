@@ -179,11 +179,10 @@
         <div class="captchaBox">
           <input class="inputCaptcha" id="captcha" name="captcha" type="text" placeholder="captcha">
           <div class="captchaImgBox">
-            <img src="/admin/captcha" alt="" onclick="this.src=&quot;/admin/captcha?&quot;+Math.random();">
+            <img id="captchaImg" src="/admin/captcha" alt="" onclick="this.src=&quot;/admin/captcha?&quot;+Math.random();">
           </div>
           <span class="errorMsg" id="captchaError"></span>
         </div>
-<!--        <input type="hidden" name="__token__" value="{:token()}">-->
       </div>
       <div class="btnBox">
         <input class="btn" type="submit" value="login">
@@ -232,6 +231,8 @@
           alert("验证通过");
         }
         else if (res.code === 401) {
+          const captchaImg = document.getElementById("captchaImg");
+          captchaImg.src = `/admin/captcha?${Math.random()}`;
           alert(res.msg);
         }
         else {
