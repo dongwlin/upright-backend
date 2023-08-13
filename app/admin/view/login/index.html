@@ -228,7 +228,7 @@
       .catch(error => console.error('Error:', error))
       .then(res => {
         if (res.code === 200) {
-          alert("验证通过");
+          location.href = '/admin';
         }
         else if (res.code === 401 || res.code === 403) {
           const captchaImg = document.getElementById("captchaImg");
@@ -239,7 +239,6 @@
           console.log(res);
         }
       });
-
   });
 
   const validate = (data, name, errElement) => {

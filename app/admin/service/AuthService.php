@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace app\admin\service;
 
 use app\admin\model\AdminModel;
+use think\facade\Session;
 
 class AuthService extends BaseService
 {
@@ -35,6 +36,9 @@ class AuthService extends BaseService
         {
             if ($user->status)
             {
+                Session::set('isLogin', true);
+                Session::set('userid', $user->id);
+                Session::set('username', $user->username);
                 return [
                     'auth' => true,
                     'status' => true,
