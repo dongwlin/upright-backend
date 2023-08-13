@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>video upload</title>
+</head>
+<body>
+    <div>video upload</div>
+    <div>
+        <form id="uploadForm">
+            <input type="file" name="video" id="vidInput"><br>
+            <button onclick="handleImgUpload()">上传</button>
+        </form>
+        <div id="vidUploadSrc"></div>
+    </div>
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        uploadForm.addEventListener('submit', event => {
+          event.preventDefault();
+        })
+        function handleImgUpload() {
+            let imgInput = document.getElementById('vidInput');
+            let file = imgInput.files[0];
+            const formData = new FormData();
+            formData.append('video', file);
+            fetch('vid-upload/upload',{
+              method: 'POST',
+              body: formData
+            })
+                .then(res => res.json())
+                .catch(err => console.error('Error: ' + err))
+                .then(res => {
+                  if (res.code === 201) {
+                    const vidUploadSrc = document.getElementById('vidUploadSrc');
+                    vidUploadSrc.textContent = res.data.vidSrc;
+                  }
+                  else if (res.code === 400) {
+                    alert(res.msg);
+                  }
+                  else {
+                    console.log(res);
+                  }
+                });
+      }
+</script>
+</body>
+</html>

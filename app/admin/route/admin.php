@@ -19,3 +19,6 @@ Route::get('captcha/[:config]','\\think\\captcha\\CaptchaController@index');
 
 Route::get('/img-upload', 'ImgUpload/index');
 Route::post('/img-upload/upload', 'ImgUpload/upload');
+
+Route::get('/vid-upload', 'VidUpload/index');
+Route::post('/vid-upload/upload', 'VidUpload/upload');
