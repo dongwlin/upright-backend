@@ -56,7 +56,7 @@ class addAdmin extends Command
             return;
         }
         $output->writeln('init admin successful');
-        $output->writeln('username: admin');
+        $output->writeln('username: ' . $username);
         $output->writeln('password: ' . $password);
     }
 }
