@@ -7,6 +7,6 @@ class IndexController
 {
     public function index()
     {
-        return 'Hello';
+        return view();
     }
 }
