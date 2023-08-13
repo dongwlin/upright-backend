@@ -11,7 +11,7 @@ use think\console\input\Option;
 use think\console\Output;
 use think\db\exception\DbException;
 
-class addAdmin extends Command
+class addAdminCommand extends Command
 {
     protected function configure()
     {
