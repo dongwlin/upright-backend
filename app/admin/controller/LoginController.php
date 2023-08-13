@@ -6,11 +6,9 @@ declare(strict_types=1);
 
 namespace app\admin\controller;
 
-use app\admin\model\AdminModel;
 use app\admin\service\AuthService;
 use app\admin\validate\AuthValidate;
 use think\exception\ValidateException;
-use think\facade\Session;
 use think\response\Json;
 
 class LoginController
