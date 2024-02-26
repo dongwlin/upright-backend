@@ -65,7 +65,31 @@ class TrainService extends BaseService
         {
             throw new ApiServiceException("数据不存在");
         }
-        return $data->toArray();
+        $ret = $data->toArray();
+        $ret["tuoEntities"] = json_decode($ret["tuoEntities"]);
+        $ret["wanEntities"] = json_decode($ret["wanEntities"]);
+        return $ret;
+    }
+
+    public function queryAll() : array {
+        $data = $this->model->select();
+        $ret = $data->toArray();
+        for ($i = 0; $i < sizeof($ret); $i++) {
+            $ret[$i]["tuoEntities"] = json_decode($ret[$i]["tuoEntities"]);
+            $ret[$i]["wanEntities"] = json_decode($ret[$i]["wanEntities"]);
+        }
+        return $ret;
+    }
+
+    public function queryAllByUid(string $uid): array
+    {
+        $data = $this->model->where("user_id", '=', $uid)->select();
+        $ret = $data->toArray();
+        for ($i = 0; $i < sizeof($ret); $i++) {
+            $ret[$i]["tuoEntities"] = json_decode($ret[$i]["tuoEntities"]);
+            $ret[$i]["wanEntities"] = json_decode($ret[$i]["wanEntities"]);
+        }
+        return $ret;
     }
 
     /**
@@ -85,48 +109,6 @@ class TrainService extends BaseService
         if (!$result)
         {
             throw new ApiServiceException("删除失败");
-        }
-        return true;
-    }
-
-    /**
-     * 禁用
-     * @param $id
-     * @return bool
-     * @throws ApiServiceException
-     */
-    public function disable($id): bool
-    {
-        $data = $this->model->findOrEmpty($id);
-        if ($data->isEmpty())
-        {
-            throw new ApiServiceException("数据不存在");
-        }
-        $result = $data->save(['status' => false]);
-        if (!$result)
-        {
-            throw new ApiServiceException("禁用失败");
-        }
-        return true;
-    }
-
-    /**
-     * 启用
-     * @param $id
-     * @return bool
-     * @throws ApiServiceException
-     */
-    public function enable($id): bool
-    {
-        $data = $this->model->findOrEmpty($id);
-        if ($data->isEmpty())
-        {
-            throw new ApiServiceException("数据不存在");
-        }
-        $result = $data->save(['status' => true]);
-        if (!$result)
-        {
-            throw new ApiServiceException("启用失败");
         }
         return true;
     }

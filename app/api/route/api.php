@@ -10,15 +10,16 @@ Route::miss(function() {
     return api_error_404();
 });
 // api index route
-ROute::rule('/', 'Index');
+Route::rule('/', 'Index');
+
+// api test
+Route::get('selectLoginStatus', 'test/index');
+Route::get('aggreateDay', 'train/index');
+
+Route::get("trains", "train/queryAll")->middleware(\app\api\middleware\CheckAuth::class);
 
 // api login route
 Route::post('login', 'WXLogin/index');
-
-// api test route
-Route::group('test',function () {
-    Route::get('/', 'test/index');
-})->middleware(\app\api\middleware\CheckAuth::class);
 
 // user route
 Route::group('user', function () {
