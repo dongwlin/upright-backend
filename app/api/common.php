@@ -32,12 +32,12 @@ if (!function_exists('api_result')) {
 if (!function_exists('api_success')) {
     /**
      * 操作成功
-     * @param array $data
+     * @param $data
      * @param string $msg
      * @param int $code
      * @return Json
      */
-    function api_success(array $data = [], string $msg = 'success', int $code = 200): Json
+    function api_success($data = [], string $msg = 'success', int $code = 200): Json
     {
         return api_result($msg, $data, $code);
     }
