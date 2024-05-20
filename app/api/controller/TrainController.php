@@ -17,4 +17,14 @@ class TrainController
     {
         return api_success($service->queryAll());
     }
+
+    function queryAllT(TrainService $service): \think\response\Json
+    {
+        $ret = $service->queryAll();
+        $data = [];
+        for ($i = 0; $i < sizeof($ret); $i++) {
+            $data[$ret[$i]["startTime"]] = $ret[$i];
+        }
+        return api_success($data);
+    }
 }
