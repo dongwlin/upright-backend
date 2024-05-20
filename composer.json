@@ -20,10 +20,10 @@
         }
     ],
     "require": {
-        "php": ">=7.2.5",
-        "topthink/framework": "^6.1.0",
-        "topthink/think-orm": "^2.0",
-        "topthink/think-filesystem": "^1.0",
+        "php": ">=8.0.0",
+        "topthink/framework": "^8.0",
+        "topthink/think-orm": "3.0",
+        "topthink/think-filesystem": "^2.0",
         "topthink/think-multi-app": "^1.0",
         "firebase/php-jwt": "^6.4",
       "ext-curl": "*",
