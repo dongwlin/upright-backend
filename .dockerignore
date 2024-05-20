@@ -1,0 +1,8 @@
+/.idea
+/vendor
+/runtime
+.env
+/public/static/videos
+/public/static/images
+!/public/static/images/bg.png
+!/public/static/images/defaultAvatar.png
