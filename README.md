@@ -8,9 +8,9 @@
 
 ## 简介
 
-基于Thinkphp6
-php 7.4.0
-mysql 5.7.27
+基于ThinkPHP 8
+PHP 8.3
+MySQL 8
 
 重构中
 
