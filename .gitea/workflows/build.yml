@@ -21,7 +21,7 @@ jobs:
           docker buildx build -t upright-backend:dev -o - . > upright-backend.tar
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: upright-backend
           path: upright-backend.tar
