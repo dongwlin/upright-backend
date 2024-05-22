@@ -1,0 +1,31 @@
+name: build
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build docker image
+        run: |
+          docker buildx build --tag upright-backend .
+
+      - name: Save docker image
+        run: |
+          docker save upright-backend -o upright-backend.tar
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: upright-backend
+          path: upright-backend.tar
