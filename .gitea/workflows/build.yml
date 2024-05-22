@@ -18,11 +18,7 @@ jobs:
 
       - name: Build docker image
         run: |
-          docker buildx build --tag upright-backend .
-
-      - name: Save docker image
-        run: |
-          docker save upright-backend -o upright-backend.tar
+          docker buildx build - upright-backend:dev -o - . > upright-backend.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
