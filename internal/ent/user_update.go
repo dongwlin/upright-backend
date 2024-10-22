@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dongwlin/upright-backend/internal/ent/predicate"
-	"github.com/dongwlin/upright-backend/internal/ent/train"
 	"github.com/dongwlin/upright-backend/internal/ent/user"
 )
 
@@ -141,45 +140,9 @@ func (uu *UserUpdate) SetNillableCreatedAt(t *time.Time) *UserUpdate {
 	return uu
 }
 
-// AddTrainIDs adds the "trains" edge to the Train entity by IDs.
-func (uu *UserUpdate) AddTrainIDs(ids ...int) *UserUpdate {
-	uu.mutation.AddTrainIDs(ids...)
-	return uu
-}
-
-// AddTrains adds the "trains" edges to the Train entity.
-func (uu *UserUpdate) AddTrains(t ...*Train) *UserUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return uu.AddTrainIDs(ids...)
-}
-
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
-}
-
-// ClearTrains clears all "trains" edges to the Train entity.
-func (uu *UserUpdate) ClearTrains() *UserUpdate {
-	uu.mutation.ClearTrains()
-	return uu
-}
-
-// RemoveTrainIDs removes the "trains" edge to Train entities by IDs.
-func (uu *UserUpdate) RemoveTrainIDs(ids ...int) *UserUpdate {
-	uu.mutation.RemoveTrainIDs(ids...)
-	return uu
-}
-
-// RemoveTrains removes "trains" edges to Train entities.
-func (uu *UserUpdate) RemoveTrains(t ...*Train) *UserUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return uu.RemoveTrainIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -244,51 +207,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := uu.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
-	}
-	if uu.mutation.TrainsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.TrainsTable,
-			Columns: []string{user.TrainsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(train.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.RemovedTrainsIDs(); len(nodes) > 0 && !uu.mutation.TrainsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.TrainsTable,
-			Columns: []string{user.TrainsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(train.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.TrainsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.TrainsTable,
-			Columns: []string{user.TrainsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(train.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -422,45 +340,9 @@ func (uuo *UserUpdateOne) SetNillableCreatedAt(t *time.Time) *UserUpdateOne {
 	return uuo
 }
 
-// AddTrainIDs adds the "trains" edge to the Train entity by IDs.
-func (uuo *UserUpdateOne) AddTrainIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.AddTrainIDs(ids...)
-	return uuo
-}
-
-// AddTrains adds the "trains" edges to the Train entity.
-func (uuo *UserUpdateOne) AddTrains(t ...*Train) *UserUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return uuo.AddTrainIDs(ids...)
-}
-
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
-}
-
-// ClearTrains clears all "trains" edges to the Train entity.
-func (uuo *UserUpdateOne) ClearTrains() *UserUpdateOne {
-	uuo.mutation.ClearTrains()
-	return uuo
-}
-
-// RemoveTrainIDs removes the "trains" edge to Train entities by IDs.
-func (uuo *UserUpdateOne) RemoveTrainIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.RemoveTrainIDs(ids...)
-	return uuo
-}
-
-// RemoveTrains removes "trains" edges to Train entities.
-func (uuo *UserUpdateOne) RemoveTrains(t ...*Train) *UserUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return uuo.RemoveTrainIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -555,51 +437,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
-	}
-	if uuo.mutation.TrainsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.TrainsTable,
-			Columns: []string{user.TrainsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(train.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.RemovedTrainsIDs(); len(nodes) > 0 && !uuo.mutation.TrainsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.TrainsTable,
-			Columns: []string{user.TrainsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(train.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.TrainsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.TrainsTable,
-			Columns: []string{user.TrainsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(train.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &User{config: uuo.config}
 	_spec.Assign = _node.assignValues

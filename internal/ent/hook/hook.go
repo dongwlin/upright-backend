@@ -9,18 +9,6 @@ import (
 	"github.com/dongwlin/upright-backend/internal/ent"
 )
 
-// The TrainFunc type is an adapter to allow the use of ordinary
-// function as Train mutator.
-type TrainFunc func(context.Context, *ent.TrainMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f TrainFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.TrainMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TrainMutation", m)
-}
-
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)

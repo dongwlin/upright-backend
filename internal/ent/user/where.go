@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/dongwlin/upright-backend/internal/ent/predicate"
 )
 
@@ -468,29 +467,6 @@ func CreatedAtLT(v time.Time) predicate.User {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.User {
 	return predicate.User(sql.FieldLTE(FieldCreatedAt, v))
-}
-
-// HasTrains applies the HasEdge predicate on the "trains" edge.
-func HasTrains() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, TrainsTable, TrainsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasTrainsWith applies the HasEdge predicate on the "trains" edge with a given conditions (other predicates).
-func HasTrainsWith(preds ...predicate.Train) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := newTrainsStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
 }
 
 // And groups predicates with the AND operator between them.

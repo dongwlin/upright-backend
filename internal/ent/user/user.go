@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -28,17 +27,8 @@ const (
 	FieldStatus = "status"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgeTrains holds the string denoting the trains edge name in mutations.
-	EdgeTrains = "trains"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// TrainsTable is the table that holds the trains relation/edge.
-	TrainsTable = "trains"
-	// TrainsInverseTable is the table name for the Train entity.
-	// It exists in this package in order to avoid circular dependency with the "train" package.
-	TrainsInverseTable = "trains"
-	// TrainsColumn is the table column denoting the trains relation/edge.
-	TrainsColumn = "user_trains"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -111,25 +101,4 @@ func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
-}
-
-// ByTrainsCount orders the results by trains count.
-func ByTrainsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTrainsStep(), opts...)
-	}
-}
-
-// ByTrains orders the results by trains terms.
-func ByTrains(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTrainsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-func newTrainsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(TrainsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, TrainsTable, TrainsColumn),
-	)
 }

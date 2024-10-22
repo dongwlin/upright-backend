@@ -10,7 +10,6 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dongwlin/upright-backend/internal/ent/train"
 	"github.com/dongwlin/upright-backend/internal/ent/user"
 )
 
@@ -77,21 +76,6 @@ func (uc *UserCreate) SetNillableCreatedAt(t *time.Time) *UserCreate {
 		uc.SetCreatedAt(*t)
 	}
 	return uc
-}
-
-// AddTrainIDs adds the "trains" edge to the Train entity by IDs.
-func (uc *UserCreate) AddTrainIDs(ids ...int) *UserCreate {
-	uc.mutation.AddTrainIDs(ids...)
-	return uc
-}
-
-// AddTrains adds the "trains" edges to the Train entity.
-func (uc *UserCreate) AddTrains(t ...*Train) *UserCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return uc.AddTrainIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -215,22 +199,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
-	}
-	if nodes := uc.mutation.TrainsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.TrainsTable,
-			Columns: []string{user.TrainsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(train.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

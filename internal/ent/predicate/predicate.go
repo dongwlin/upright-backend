@@ -6,8 +6,5 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Train is the predicate function for train builders.
-type Train func(*sql.Selector)
-
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

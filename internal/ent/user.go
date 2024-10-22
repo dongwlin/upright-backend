@@ -30,29 +30,8 @@ type User struct {
 	// Status holds the value of the "status" field.
 	Status int8 `json:"status,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the UserQuery when eager-loading is set.
-	Edges        UserEdges `json:"edges"`
+	CreatedAt    time.Time `json:"created_at,omitempty"`
 	selectValues sql.SelectValues
-}
-
-// UserEdges holds the relations/edges for other nodes in the graph.
-type UserEdges struct {
-	// Trains holds the value of the trains edge.
-	Trains []*Train `json:"trains,omitempty"`
-	// loadedTypes holds the information for reporting if a
-	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
-}
-
-// TrainsOrErr returns the Trains value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) TrainsOrErr() ([]*Train, error) {
-	if e.loadedTypes[0] {
-		return e.Trains, nil
-	}
-	return nil, &NotLoadedError{edge: "trains"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -140,11 +119,6 @@ func (u *User) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (u *User) Value(name string) (ent.Value, error) {
 	return u.selectValues.Get(name)
-}
-
-// QueryTrains queries the "trains" edge of the User entity.
-func (u *User) QueryTrains() *TrainQuery {
-	return NewUserClient(u.config).QueryTrains(u)
 }
 
 // Update returns a builder for updating this User.

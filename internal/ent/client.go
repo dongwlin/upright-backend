@@ -14,8 +14,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/dongwlin/upright-backend/internal/ent/train"
 	"github.com/dongwlin/upright-backend/internal/ent/user"
 )
 
@@ -24,8 +22,6 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Train is the client for interacting with the Train builders.
-	Train *TrainClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -39,7 +35,6 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Train = NewTrainClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -133,7 +128,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
-		Train:  NewTrainClient(cfg),
 		User:   NewUserClient(cfg),
 	}, nil
 }
@@ -154,7 +148,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
-		Train:  NewTrainClient(cfg),
 		User:   NewUserClient(cfg),
 	}, nil
 }
@@ -162,7 +155,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Train.
+//		User.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -184,175 +177,22 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Train.Use(hooks...)
 	c.User.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.Train.Intercept(interceptors...)
 	c.User.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *TrainMutation:
-		return c.Train.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
-	}
-}
-
-// TrainClient is a client for the Train schema.
-type TrainClient struct {
-	config
-}
-
-// NewTrainClient returns a client for the Train from the given config.
-func NewTrainClient(c config) *TrainClient {
-	return &TrainClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `train.Hooks(f(g(h())))`.
-func (c *TrainClient) Use(hooks ...Hook) {
-	c.hooks.Train = append(c.hooks.Train, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `train.Intercept(f(g(h())))`.
-func (c *TrainClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Train = append(c.inters.Train, interceptors...)
-}
-
-// Create returns a builder for creating a Train entity.
-func (c *TrainClient) Create() *TrainCreate {
-	mutation := newTrainMutation(c.config, OpCreate)
-	return &TrainCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of Train entities.
-func (c *TrainClient) CreateBulk(builders ...*TrainCreate) *TrainCreateBulk {
-	return &TrainCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *TrainClient) MapCreateBulk(slice any, setFunc func(*TrainCreate, int)) *TrainCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &TrainCreateBulk{err: fmt.Errorf("calling to TrainClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*TrainCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &TrainCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for Train.
-func (c *TrainClient) Update() *TrainUpdate {
-	mutation := newTrainMutation(c.config, OpUpdate)
-	return &TrainUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *TrainClient) UpdateOne(t *Train) *TrainUpdateOne {
-	mutation := newTrainMutation(c.config, OpUpdateOne, withTrain(t))
-	return &TrainUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *TrainClient) UpdateOneID(id int) *TrainUpdateOne {
-	mutation := newTrainMutation(c.config, OpUpdateOne, withTrainID(id))
-	return &TrainUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Train.
-func (c *TrainClient) Delete() *TrainDelete {
-	mutation := newTrainMutation(c.config, OpDelete)
-	return &TrainDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *TrainClient) DeleteOne(t *Train) *TrainDeleteOne {
-	return c.DeleteOneID(t.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *TrainClient) DeleteOneID(id int) *TrainDeleteOne {
-	builder := c.Delete().Where(train.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &TrainDeleteOne{builder}
-}
-
-// Query returns a query builder for Train.
-func (c *TrainClient) Query() *TrainQuery {
-	return &TrainQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeTrain},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a Train entity by its id.
-func (c *TrainClient) Get(ctx context.Context, id int) (*Train, error) {
-	return c.Query().Where(train.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *TrainClient) GetX(ctx context.Context, id int) *Train {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryOwner queries the owner edge of a Train.
-func (c *TrainClient) QueryOwner(t *Train) *UserQuery {
-	query := (&UserClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := t.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(train.Table, train.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, train.OwnerTable, train.OwnerColumn),
-		)
-		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *TrainClient) Hooks() []Hook {
-	return c.hooks.Train
-}
-
-// Interceptors returns the client interceptors.
-func (c *TrainClient) Interceptors() []Interceptor {
-	return c.inters.Train
-}
-
-func (c *TrainClient) mutate(ctx context.Context, m *TrainMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&TrainCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&TrainUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&TrainUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&TrainDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown Train mutation op: %q", m.Op())
 	}
 }
 
@@ -464,22 +304,6 @@ func (c *UserClient) GetX(ctx context.Context, id int) *User {
 	return obj
 }
 
-// QueryTrains queries the trains edge of a User.
-func (c *UserClient) QueryTrains(u *User) *TrainQuery {
-	query := (&TrainClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(train.Table, train.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.TrainsTable, user.TrainsColumn),
-		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *UserClient) Hooks() []Hook {
 	return c.hooks.User
@@ -508,9 +332,9 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Train, User []ent.Hook
+		User []ent.Hook
 	}
 	inters struct {
-		Train, User []ent.Interceptor
+		User []ent.Interceptor
 	}
 )

@@ -8,33 +8,6 @@ import (
 )
 
 var (
-	// TrainsColumns holds the columns for the "trains" table.
-	TrainsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "start_time", Type: field.TypeTime},
-		{Name: "end_time", Type: field.TypeTime},
-		{Name: "bend_down_times", Type: field.TypeInt64},
-		{Name: "hunch_down_times", Type: field.TypeInt64},
-		{Name: "ill_keep_times", Type: field.TypeInt64},
-		{Name: "description", Type: field.TypeString},
-		{Name: "status", Type: field.TypeInt8},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_trains", Type: field.TypeInt, Nullable: true},
-	}
-	// TrainsTable holds the schema information for the "trains" table.
-	TrainsTable = &schema.Table{
-		Name:       "trains",
-		Columns:    TrainsColumns,
-		PrimaryKey: []*schema.Column{TrainsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "trains_users_trains",
-				Columns:    []*schema.Column{TrainsColumns[9]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
-	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -54,11 +27,9 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		TrainsTable,
 		UsersTable,
 	}
 )
 
 func init() {
-	TrainsTable.ForeignKeys[0].RefTable = UsersTable
 }

@@ -1,8 +1,16 @@
 package main
 
-import "github.com/dongwlin/upright-backend/internal/server"
+import (
+	"fmt"
+	"github.com/dongwlin/upright-backend/internal/server"
+	"os"
+)
 
 func main() {
-	server := server.NewHttpServer()
-	server.Run(":8080")
+	httpServer := server.NewHttpServer()
+	err := httpServer.Run(":8080")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(0)
+	}
 }

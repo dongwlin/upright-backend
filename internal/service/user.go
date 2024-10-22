@@ -1,63 +1,45 @@
 package service
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
-
+	"context"
 	"github.com/dongwlin/upright-backend/internal/ent"
+	"github.com/dongwlin/upright-backend/internal/ent/user"
 )
 
-type User interface {
-	Login() bool
+type User struct {
+	db *ent.Client
 }
 
-type WXUser struct {
-	store *ent.Client
-	Code  string
+func NewUser(db *ent.Client) *User {
+	return &User{
+		db: db,
+	}
 }
 
-type wxJScode2SessionResponse struct {
-	OpenID     string `json:"openid"`
-	SessionKey string `json:"session_key"`
-	Error      string `json:"errcode"`
-	ErrorMsg   string `json:"errmsg"`
+type CreateUserParams struct {
+	Openid      string
+	Nickname    string
+	Gender      int8
+	Avatar      string
+	Description string
+	Status      int8
 }
 
-func (u *WXUser) Login() bool {
-	appId := ""
-	appSecret := ""
-	grantType := ""
-
-	url := "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=%s"
-	url = fmt.Sprintf(url, appId, appSecret, u.Code, grantType)
-	resp, err := http.Get(url)
-	if err != nil {
-		// todo: log the err
-		return false
-	}
-
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		// todo: log the err
-		return false
-	}
-
-	var wxResp wxJScode2SessionResponse
-	if err := json.NewDecoder(resp.Body).Decode(&wxResp); err != nil {
-		// todo: log the err
-		return false
-	}
-
-	if wxResp.Error != "" {
-		// todo: log the err
-		return false
-	}
-
-	return false
+func (s *User) Create(ctx context.Context, params CreateUserParams) (*ent.User, error) {
+	u, err := s.db.User.Create().
+		SetOpenid(params.Openid).
+		SetNickname(params.Nickname).
+		SetGender(params.Gender).
+		SetAvatar(params.Avatar).
+		SetDescription(params.Description).
+		SetStatus(params.Status).
+		Save(ctx)
+	return u, err
 }
 
-func (u *WXUser) create() {
-
+func (s *User) GetByOpenid(ctx context.Context, openid string) (*ent.User, error) {
+	u, err := s.db.User.Query().
+		Where(user.OpenidEQ(openid)).
+		First(ctx)
+	return u, err
 }

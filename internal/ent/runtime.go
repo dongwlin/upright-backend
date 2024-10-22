@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/dongwlin/upright-backend/internal/ent/schema"
-	"github.com/dongwlin/upright-backend/internal/ent/train"
 	"github.com/dongwlin/upright-backend/internal/ent/user"
 )
 
@@ -14,12 +13,6 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	trainFields := schema.Train{}.Fields()
-	_ = trainFields
-	// trainDescCreatedAt is the schema descriptor for created_at field.
-	trainDescCreatedAt := trainFields[7].Descriptor()
-	// train.DefaultCreatedAt holds the default value on creation for the created_at field.
-	train.DefaultCreatedAt = trainDescCreatedAt.Default.(time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescGender is the schema descriptor for gender field.
