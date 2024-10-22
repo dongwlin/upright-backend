@@ -7,6 +7,7 @@ import (
 	"github.com/dongwlin/upright-backend/internal/handler"
 	"github.com/dongwlin/upright-backend/internal/service"
 	"github.com/gofiber/fiber/v2"
+	_ "github.com/lib/pq"
 	"log"
 )
 
