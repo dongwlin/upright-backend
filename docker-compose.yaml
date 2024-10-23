@@ -5,7 +5,7 @@ services:
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
-    image: dongwlin/upright-backend:0.3.2
+    image: dongwlin/upright-backend:latest
     ports:
       - "8080:8080"
     volumes:
