@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+    image: dongwlin/upright-backend:0.3.2
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config.yaml:/config.yaml
+      - ./static:/static
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dbname
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

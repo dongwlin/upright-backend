@@ -1,0 +1,51 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: dongwlin/upright-backend
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            dongwlin/upright-backend:dev
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Tag image as latest if a tag is present
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          docker tag dongwlin/upright-backend:dev dongwlin/upright-backend:${{ steps.meta.outputs.tags }}
+          docker tag dongwlin/upright-backend:dev dongwlin/upright-backend:latest
+          docker push dongwlin/upright-backend:${{ steps.meta.outputs.tags }}
+          docker push dongwlin/upright-backend:latest
