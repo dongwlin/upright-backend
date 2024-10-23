@@ -39,13 +39,13 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            dongwlin/upright-backend:dev
+            ghcr.io/dongwlin/upright-backend:dev
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Tag image as latest if a tag is present
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          docker tag dongwlin/upright-backend:dev dongwlin/upright-backend:${{ steps.meta.outputs.tags }}
-          docker tag dongwlin/upright-backend:dev dongwlin/upright-backend:latest
-          docker push dongwlin/upright-backend:${{ steps.meta.outputs.tags }}
-          docker push dongwlin/upright-backend:latest
+          docker tag ghcr.io/dongwlin/upright-backend:dev ghcr.io/dongwlin/upright-backend:${{ steps.meta.outputs.tags }}
+          docker tag ghcr.io/dongwlin/upright-backend:dev ghcr.io/dongwlin/upright-backend:latest
+          docker push ghcr.io/dongwlin/upright-backend:${{ steps.meta.outputs.tags }}
+          docker push ghcr.io/dongwlin/upright-backend:latest
