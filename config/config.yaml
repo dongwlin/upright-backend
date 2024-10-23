@@ -1,0 +1,19 @@
+http:
+  host: "0.0.0.0"
+  port: 8080
+
+database:
+  host: "db"
+  port: 5432
+  user: "postgres"
+  password: "password"
+  dbname: "upright"
+
+security:
+  paseto:
+    key: "symmetric-secret-key (size = 32)"
+
+  we_app:
+    app_id: "app-id"
+    app_secret: "app-secret"
+    grant_type: "grant-type"
