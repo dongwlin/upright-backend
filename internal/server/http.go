@@ -41,6 +41,7 @@ func NewHttpServer() *HttpServer {
 	authService := service.NewAuth(conf, userService)
 	authHandler := handler.NewAuthHandler(authService)
 	handler.RegisterUserHandler(api, authHandler)
+	app.Static("/static", "./static")
 	return &HttpServer{
 		app: app,
 	}
