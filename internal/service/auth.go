@@ -81,7 +81,12 @@ func (s *Auth) WeAppCode2Session(code string) (string, error) {
 	} else {
 		return "", fmt.Errorf("failed to get user by openid: %w", err)
 	}
-	token, err := pasetoware.CreateToken([]byte(s.conf.Security.Paseto.Key), u.Openid, 12*time.Hour, pasetoware.PurposeLocal)
+	token, err := pasetoware.CreateToken(
+		[]byte(s.conf.Security.Paseto.Key),
+		fmt.Sprintf("%d", u.ID),
+		12*time.Hour,
+		pasetoware.PurposeLocal,
+	)
 	if err != nil {
 		return "", fmt.Errorf("failed to create token: %w", err)
 	}
