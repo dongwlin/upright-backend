@@ -14,7 +14,9 @@ func RegisterUserHandler(r fiber.Router, h *AuthHandler) {
 }
 
 func NewAuthHandler(authService *service.Auth) *AuthHandler {
-	return &AuthHandler{}
+	return &AuthHandler{
+		authService: authService,
+	}
 }
 
 type WeAppLoginRequest struct {
