@@ -6,6 +6,7 @@ import (
 	"github.com/dongwlin/upright-backend/internal/ent"
 	"github.com/dongwlin/upright-backend/internal/handler"
 	"github.com/dongwlin/upright-backend/internal/service"
+	pasetoware "github.com/gofiber/contrib/paseto"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
 	"log"
@@ -42,6 +43,13 @@ func NewHttpServer() *HttpServer {
 	authHandler := handler.NewAuthHandler(authService)
 	handler.RegisterUserHandler(api, authHandler)
 	app.Static("/static", "./static")
+
+	auth := api.Group("/", pasetoware.New(pasetoware.Config{
+		SymmetricKey: []byte(conf.Security.Paseto.Key),
+		TokenPrefix:  "Bearer",
+	}))
+	userHandler := handler.NewUserHandler(userService)
+	handler.RegisterUser(auth, userHandler)
 	return &HttpServer{
 		app: app,
 	}

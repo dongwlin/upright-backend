@@ -43,3 +43,8 @@ func (s *User) GetByOpenid(ctx context.Context, openid string) (*ent.User, error
 		First(ctx)
 	return u, err
 }
+
+func (s *User) GetById(ctx context.Context, id int) (*ent.User, error) {
+	u, err := s.db.User.Get(ctx, id)
+	return u, err
+}
