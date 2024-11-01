@@ -5,10 +5,12 @@ import (
 	"github.com/dongwlin/upright-backend/internal/service"
 	pasetoware "github.com/gofiber/contrib/paseto"
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 	"strconv"
 )
 
 type UserHandler struct {
+	logger      *zap.Logger
 	userService *service.User
 }
 
@@ -16,8 +18,9 @@ func RegisterUser(r fiber.Router, h *UserHandler) {
 	r.Get("/users/me", h.GetByToken)
 }
 
-func NewUserHandler(userService *service.User) *UserHandler {
+func NewUserHandler(logger *zap.Logger, userService *service.User) *UserHandler {
 	return &UserHandler{
+		logger:      logger,
 		userService: userService,
 	}
 }

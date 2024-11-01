@@ -3,9 +3,11 @@ package handler
 import (
 	"github.com/dongwlin/upright-backend/internal/service"
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 type AuthHandler struct {
+	logger      *zap.Logger
 	authService *service.Auth
 }
 
@@ -13,8 +15,9 @@ func RegisterUserHandler(r fiber.Router, h *AuthHandler) {
 	r.Post("/auth/login/weapp", h.WeAppLogin)
 }
 
-func NewAuthHandler(authService *service.Auth) *AuthHandler {
+func NewAuthHandler(logger *zap.Logger, authService *service.Auth) *AuthHandler {
 	return &AuthHandler{
+		logger:      logger,
 		authService: authService,
 	}
 }

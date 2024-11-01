@@ -6,9 +6,11 @@ import (
 )
 
 type Config struct {
+	Env      string
 	Http     HttpConfig
 	Database DatabaseConfig
 	Security SecurityConfig
+	Log      LogConfig
 }
 
 type HttpConfig struct {
@@ -39,6 +41,15 @@ type WeAppConfig struct {
 	GrantType string `mapstructure:"grant_type"`
 }
 
+type LogConfig struct {
+	Level      string
+	Filename   string
+	MaxSize    int `mapstructure:"max_size"`
+	MaxBackups int `mapstructure:"max_backups"`
+	MaxAge     int `mapstructure:"max_age"`
+	Compress   bool
+}
+
 func New() *Config {
 	v := viper.New()
 
@@ -55,7 +66,7 @@ func New() *Config {
 
 	// Read the configuration file
 	if err := v.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err)
+		log.Fatalf("Error reading config file, %v", err)
 	}
 
 	var config Config
